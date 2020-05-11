@@ -25,7 +25,7 @@ const schema = new Schema({
     feed_rate: {
         type: Number, 
         required: true
-    }
+    },
 });
 
 module.exports = mongoose.model("machining", schema);
