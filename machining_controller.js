@@ -13,7 +13,7 @@ const machining_data = (req) =>{
 
 // CREATE
 const api_post_parameter = (req, res, next)=>{
-    //puuttuu rivi
+    //console.log();
     let data = machining_data(req);
     let new_machining = machining_model(data);
 
@@ -22,20 +22,15 @@ const api_post_parameter = (req, res, next)=>{
         res.send(JSON.stringify(new_machining));
     }).catch(err => {
         res.status(500);
-        //välitetään virhetieto myös postmanille
         res.send(err.errmsg);
         console.log(err);
     });
-
-    //console.log(data);
-    //alla oleva lähettää ja päättää lähetyksen samalla rivillä
-    //res.send(JSON.stringify(data));
 };
 
-// READ
+// READ all
 const api_get_parameters = (req, res, next)=>{
     //console.log('api_get_materials');
-    material_model.find({})
+    machining_model.find({})
     .lean()
     .then(materials => {
         res.send(JSON.stringify(materials));
@@ -44,32 +39,41 @@ const api_get_parameters = (req, res, next)=>{
         res.send(err.errmsg);
         console.log(err);
     });
-    //res.send(JSON.stringify([]));
 };
-
+// READ one by id
+const api_get_parameter = (req, res, next)=>{
+    //console.log('api_get_materials');
+    let id = req.params.id;
+    machining_model.findById(id, {})
+    .lean()
+    .then(materials => {
+        res.send(JSON.stringify(materials));
+    }).catch(err => {
+        res.status(500);
+        res.send(err.errmsg);
+        console.log(err);
+    });
+};
 // UPDATE
-//PUT /api/material/5e87739680a811535c242661
 const api_put_parameter = (req, res, next) => {
     //console.log('put osio')
     let id = req.params.id;
-    let data = material_data(req);
-
-    material_model.findByIdAndUpdate(id, data, {
+    let data = machining_data(req);
+    machining_model.findByIdAndUpdate(id, data, {
         new: true
     }).then((material)=> {
         res.send(material);
     }).catch(err => {
-            res.status(500);
-            res.send(err.errmsg);
-            console.log(err);
+        res.status(500);
+        res.send(err.errmsg);
+        console.log(err);
     });
 };
-
 // DELETE
 //delete /api/material/5e87739680a811535c242661
 const api_delete_parameter = (req, res, next) => {
     let id = req.params.id;
-    material_model.findByIdAndRemove(id).then(() => {
+    machining_model.findByIdAndRemove(id).then(() => {
         res.send();
     }).catch(err => {
         res.status(500);
@@ -77,8 +81,7 @@ const api_delete_parameter = (req, res, next) => {
         console.log(err);
     });
 };
-
-// exports
+// EXPORTS
 module.exports.api_post_parameter = api_post_parameter;
 module.exports.api_get_parameters = api_get_parameters;
 module.exports.api_get_parameter = api_get_parameter;
